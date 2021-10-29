@@ -1,0 +1,32 @@
+{
+  "name": "mr_xbekkur",
+  "version": "1.0.0",
+  "description": "bot for my class",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kirill-iceland/MR_Xbekkur.git"
+  },
+  "keywords": [
+    "bot",
+    "mr",
+    "menntaskoli",
+    "i",
+    "reikjavik",
+    "iceland",
+    "reykjavik"
+  ],
+  "author": "Kirill Zolotuskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kirill-iceland/MR_Xbekkur/issues"
+  },
+  "homepage": "https://github.com/Kirill-iceland/MR_Xbekkur#readme",
+  "dependencies": {
+    "discord.js": "^13.3.0"
+  }
+}
