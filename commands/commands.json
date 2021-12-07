@@ -1,1 +1,16 @@
-[]
+[        
+    {
+        "name": "server",
+        "description": "Minecraft server commands",
+        "options": [{
+            "name": "online",
+            "description": "Check if the server is online",
+            "type": 1
+        },
+        {
+            "name": "players",
+            "description": "Check who is on the server",
+            "type": 1
+        }]
+    }
+]
