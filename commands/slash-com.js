@@ -63,13 +63,20 @@ exports.delete_commands_all = delete_commands_all;
  * 
  * @param {Discord.Client} client 
  * @param {{
- *         }} commands
+ *          server:     (data: {}) => String 
+ *        }} commands
  */
 function command_reply(client, commands){
     const sugestion_channel = client.channels.cache.find(ch => ch.id === '827213162213408802');
 
     client.ws.on('INTERACTION_CREATE', async interaction => { 
-        if(interaction.data.name == 'something'){
+        if(interaction.data.name == 'server'){
+            client.api.interactions(interaction.id, interaction.token).callback.post({data: {
+                type: 4,
+                data: {
+                    content: commands.server(interaction.data)
+                }
+            }})
         }
         console.log(interaction.data);
         // new Discord.WebhookClient(client.user.id, interaction.token).send('hello world')

@@ -2,3 +2,4 @@ node_modules/
 xbekkur.code-workspace
 token.json
 bot_Token.json
+commands/mc_server_ip.json
