@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const fs = require('fs')
-const json = JSON.parse(fs.readFileSync('commands/slash_com.json'))
+const json = JSON.parse(fs.readFileSync('commands/commands.json'))
 
 
 

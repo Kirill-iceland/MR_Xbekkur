@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 
-const Drive = require('./../../Storage/Drive.js')
+const Drive = require('./../Drive.js')
 
 const fetch = require('cross-fetch');
 
