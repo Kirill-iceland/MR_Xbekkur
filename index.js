@@ -10,12 +10,14 @@ const readline = require('readline');
 const slash_com = require('./commands/slash-com.js')
 
 const slash_com2 = require('./commands/commands.js')
+
 var connect = require('connect');
 var serveStatic = require('serve-static');
 
+const _PORT = process.env.PORT || 3000;
 connect()
     .use(serveStatic(__dirname + "/web"))
-    .listen(8080, () => console.log('Server running on 8080...'));
+    .listen(_PORT, () => console.log('Server running on 3000...'));
 
 const bot = new Discord.Client({ intents: [ Discord.Intents.FLAGS.GUILDS, 
                                             Discord.Intents.FLAGS.GUILD_INTEGRATIONS, 
