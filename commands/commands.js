@@ -59,12 +59,12 @@ exports.get_server_ip = get_server_ip
  *                   {name: 'players',  type: 1} 
  *          ]}} data 
  */
-function server(data){
-    var server_data = fetch("https://api.mcsrvstat.us/2/" + server_ip)
+async function server(data){
+    var server_data = await fetch("https://api.mcsrvstat.us/2/" + server_ip).then(result => result.json())
     if(server_data.online){
-        switch(data.options[1].name){
+        switch(data.options[0].name){
             case "online":
-                return "Það er kveikt á servernum." + server_data.players.online + "/" + server_data.players.max + " menn eru á servernum"
+                return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " menn eru á servernum"
         }
     }else{
         return "Það er slökkt á servernum"
