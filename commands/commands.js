@@ -27,7 +27,7 @@ try{
         rl.close(); 
         server_ip = ip_; 
         fs.writeFileSync('./commands/mc_server_ip.json', JSON.stringify(server_ip)); 
-    }
+    })
 }
 /**
  * 
