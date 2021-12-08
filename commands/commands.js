@@ -60,8 +60,8 @@ exports.get_server_ip = get_server_ip
  *          ]}} data 
  */
 async function server(data){
-    var server_data = await fetch("https://api.mcsrvstat.us/2/" + server_ip).then(result => result.json())
-    if(server_data.online){
+    var server_data = await fetch("https://api.minetools.eu/ping/" + server_ip).then(result => result.json())
+    if(!server_data.error){
         switch(data.options[0].name){
             case "online":
                 return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " menn eru á servernum"
