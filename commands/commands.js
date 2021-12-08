@@ -15,9 +15,19 @@ const slash_com = require('./slash-com.js')
 let bot;
 
 let JamesBot;
-
-let server_ip = JSON.parse(fs.readFileSync('./commands/mc_server_ip.json'))
-
+let server_ip;
+try{
+    server_ip = JSON.parse(fs.readFileSync('./commands/mc_server_ip.json'))
+}catch(e){ 
+    const rl = readline.createInterface({ 
+       input: process.stdin, 
+       output: process.stdout, 
+    }); 
+    rl.question('Enter the server ip: ', (ip_) => { 
+        rl.close(); 
+        server_ip = ip_; 
+        fs.writeFileSync('./commands/mc_server_ip.json', JSON.stringify(server_ip)); 
+        }
 /**
  * 
  * @param {Discord.Client} bot_ 
