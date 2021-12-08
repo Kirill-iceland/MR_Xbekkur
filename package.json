@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "bot for my class",
   "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "dev": "nodemon index.js --config nodemon.json",
     "test": "node index.js"
