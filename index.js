@@ -15,7 +15,7 @@ var serveStatic = require('serve-static');
 
 connect()
     .use(serveStatic(__dirname + "/web"))
-    .listen(80, () => console.log('Server running on 80...'));
+    .listen(8080, () => console.log('Server running on 8080...'));
 
 const bot = new Discord.Client({ intents: [ Discord.Intents.FLAGS.GUILDS, 
                                             Discord.Intents.FLAGS.GUILD_INTEGRATIONS, 
