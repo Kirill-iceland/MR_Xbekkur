@@ -1,1 +1,2 @@
 start: node index.js
+build: npm install
