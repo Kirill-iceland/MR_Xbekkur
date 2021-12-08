@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon index.js --config nodemon.json",
-    "test": "node index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
