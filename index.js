@@ -43,6 +43,7 @@ bot.on('ready', () => {
         readline.cursorTo(process.stdout, 0);
         console.log("Bot login".green + " - " + (`Finished, version ` + version).green);
     }
+    slash_com2.get_server_ip()
 });
 
 drivebot = new Drive.Project("credentials.json", async drivebot => {

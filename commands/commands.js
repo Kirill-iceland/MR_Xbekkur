@@ -16,19 +16,6 @@ let bot;
 
 let JamesBot;
 let server_ip;
-try{
-    server_ip = JSON.parse(fs.readFileSync('./commands/mc_server_ip.json'))
-}catch(e){ 
-    const rl = readline.createInterface({ 
-       input: process.stdin, 
-       output: process.stdout, 
-    }); 
-    rl.question('Enter the server ip: ', (ip_) => { 
-        rl.close(); 
-        server_ip = ip_; 
-        fs.writeFileSync('./commands/mc_server_ip.json', JSON.stringify(server_ip)); 
-    })
-}
 /**
  * 
  * @param {Discord.Client} bot_ 
@@ -48,6 +35,23 @@ function command_reply(){
     slash_com.command_reply(bot, {server})
 }
 exports.command_reply = command_reply
+
+function get_server_ip(){
+    try{
+        server_ip = JSON.parse(fs.readFileSync('./commands/mc_server_ip.json'))
+    }catch(e){ 
+        const rl_1 = readline.createInterface({ 
+           input: process.stdin, 
+           output: process.stdout, 
+        }); 
+        rl_1.question('Enter the server ip: ', (ip_) => { 
+            rl_1.close(); 
+            server_ip = ip_; 
+            fs.writeFileSync('./commands/mc_server_ip.json', JSON.stringify(server_ip)); 
+        })
+    }
+}
+exports.get_server_ip = get_server_ip
 
 /**
  * @param   {{options: [
