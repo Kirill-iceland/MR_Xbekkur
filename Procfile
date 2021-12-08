@@ -1,2 +1,1 @@
-start: npm run start
-dev: npm run dev
+start: node index.js
