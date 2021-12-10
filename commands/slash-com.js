@@ -63,7 +63,7 @@ exports.delete_commands_all = delete_commands_all;
  * 
  * @param {Discord.Client} client 
  * @param {{
- *          server:     (data: {}) => Promise<String> 
+ *          server:     (data: {}, interactin: Discord.CommandInteraction) => Promise<String> 
  *        }} commands
  */
 function command_reply(client, commands){
@@ -72,7 +72,7 @@ function command_reply(client, commands){
         if(interaction.isCommand()){
             if(interaction.commandName == "server"){
                 interaction.deferReply()
-                interaction.editReply(await commands.server(interaction.options.data))
+                interaction.editReply(await commands.server(interaction.options.data, interaction))
             }
         }
     })

@@ -57,14 +57,30 @@ exports.get_server_ip = get_server_ip
  * @param   {[
  *                   {name: 'online',   type: 1} |
  *                   {name: 'players',  type: 1} 
- *          ]} data 
+ *          ]} data
+ * @param   {Discord.CommandInteraction} interaction 
  */
-async function server(data){
-    var server_data = await fetch("https://api.minetools.eu/ping/" + server_ip).then(result => result.json())
+async function server(data, interaction){
+    const server_data = await fetch("https://api.minetools.eu/ping/" + server_ip).then(result => result.json())
     if(!server_data.error){
         switch(data[0].name){
             case "online":
-                return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " menn eru á servernum"
+                return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " eru að spila á servernum"
+            case "players":
+                const more_server_data = await fetch("https://api.minetools.eu/query/" + server_ip).then(result => result.json())
+                console.log(more_server_data)
+                if(more_server_data.Players == 0){
+                    return "Enginn er að spila"
+                }else{
+                    for(let i = 0; i < more_server_data.Players ; i++){
+                        const player_info = await fetch(`https://api.mojang.com/users/profiles/minecraft/${options.options[0].value}`).then(result => result.json());
+                        const embeded = new Discord.MessageEmbed()
+                            .setAuthor(player_info.name,`https://crafatar.com/avatars/${player_info.id}?overlay`)
+                            .setColor("#00FF00")
+                        
+                    }
+                    return "Þeir sem eru að spila eru:"
+                }
         }
     }else{
         return "Það er slökkt á servernum"
