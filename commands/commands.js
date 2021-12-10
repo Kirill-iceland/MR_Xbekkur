@@ -54,15 +54,15 @@ function get_server_ip(){
 exports.get_server_ip = get_server_ip
 
 /**
- * @param   {{options: [
+ * @param   {[
  *                   {name: 'online',   type: 1} |
  *                   {name: 'players',  type: 1} 
- *          ]}} data 
+ *          ]} data 
  */
 async function server(data){
     var server_data = await fetch("https://api.minetools.eu/ping/" + server_ip).then(result => result.json())
     if(!server_data.error){
-        switch(data.options[0].name){
+        switch(data[0].name){
             case "online":
                 return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " menn eru á servernum"
         }

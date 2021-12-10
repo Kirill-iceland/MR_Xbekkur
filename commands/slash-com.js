@@ -67,18 +67,14 @@ exports.delete_commands_all = delete_commands_all;
  *        }} commands
  */
 function command_reply(client, commands){
-
-    client.ws.on('INTERACTION_CREATE', async interaction => { 
-        if(interaction.data.name == 'server'){
-            client.api.interactions(interaction.id, interaction.token).callback.post({data: {
-                type: 4,
-                data: {
-                    content: await commands.server(interaction.data)
-                }
-            }})
+    
+    client.on("interactionCreate", async interaction => {
+        if(interaction.isCommand()){
+            if(interaction.commandName == "server"){
+                interaction.deferReply()
+                interaction.editReply(await commands.server(interaction.options.data))
+            }
         }
-        console.log(interaction.data);
-        // new Discord.WebhookClient(client.user.id, interaction.token).send('hello world')
     })
 }
 exports.command_reply = command_reply;
