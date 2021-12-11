@@ -67,19 +67,20 @@ async function server(data, interaction){
             case "online":
                 return "Það er kveikt á servernum. " + server_data.players.online + "/" + server_data.players.max + " eru að spila á servernum"
             case "players":
-                const more_server_data = await fetch("https://api.minetools.eu/query/" + server_ip).then(result => result.json())
-                console.log(more_server_data)
-                if(more_server_data.Players == 0){
+                if(server_data.players.online == 0){
                     return "Enginn er að spila"
                 }else{
-                    for(let i = 0; i < more_server_data.Players ; i++){
-                        const player_info = await fetch(`https://api.mojang.com/users/profiles/minecraft/${options.options[0].value}`).then(result => result.json());
+                    let embeds = [];
+                    for(let i = 0; i < server_data.players.online ; i++){
                         const embeded = new Discord.MessageEmbed()
-                            .setAuthor(player_info.name,`https://crafatar.com/avatars/${player_info.id}?overlay`)
+                            .setAuthor(server_data.players.sample[i].name,`https://crafatar.com/avatars/${server_data.players.sample[i].id}?overlay`)
                             .setColor("#00FF00")
-                        
+                        embeds.push(embeded)
                     }
-                    return "Þeir sem eru að spila eru:"
+                    while(embeds.length > 10){
+                        interaction.channel.send({embeds: embeds.splice(0, 10)})
+                    }
+                    return {content: "Þeir sem eru að spila eru:", embeds: embeds}
                 }
         }
     }else{
