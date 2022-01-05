@@ -12,5 +12,136 @@
             "description": "Check who is on the server",
             "type": 1
         }]
+    },
+    {
+        "name": "uno",
+        "description": "Commands for Uno",
+        "options": [{
+            "name": "change",
+            "description": "Change a player's name",
+            "type": 2,
+            "options": [{
+                "name": "player",
+                "description": "Change a player's name",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Old name of the player",
+                    "type": 3, 
+                    "required": true
+                },
+                {
+                    "name": "new_name",
+                    "description": "New name of the player",
+                    "type": 3, 
+                    "required": true
+                }]
+            }]
+        },
+        {
+            "name": "add",
+            "description": "Add a player or a win",
+            "type": 2,
+            "options": [{
+                "name": "player",
+                "description": "Add a player",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Name of the player",
+                    "type": 3, 
+                    "required": true
+                }]
+            },
+            {
+                "name": "win",
+                "description": "Add a win to a player",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Name of the player",
+                    "type": 3, 
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "description": "Date of the win `yyyy/mm/dd`",
+                    "type": 3, 
+                    "required": false
+                }]
+            }]
+        },
+        {
+            "name": "remove",
+            "description": "Remove a player or a win",
+            "type": 2,
+            "options": [{
+                "name": "player",
+                "description": "Remove a player",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Name of the player",
+                    "type": 3, 
+                    "required": true
+                }]
+            },
+            {
+                "name": "win",
+                "description": "Remove a win from a player",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Name of the player",
+                    "type": 3, 
+                    "required": true
+                },
+                {
+                    "name": "date",
+                    "description": "Date of the win `yyyy/mm/dd`",
+                    "type": 3, 
+                    "required": false
+                }]
+            }]
+        },
+        {
+            "name": "score",
+            "description": "Check the score",
+            "type": 2,
+            "options": [{
+                "name": "player",
+                "description": "Check the score of a player",
+                "type": 1,
+                "options": [{
+                    "name": "name",
+                    "description": "Name of the player",
+                    "type": 3, 
+                    "required": true
+                },
+                {
+                    "name": "options",
+                    "description": "Options for score",
+                    "type": 3, 
+                    "required": false,
+                    "choices": [{
+                        "name": "None",
+                        "value": "none"
+                    },
+                    {
+                        "name": "Graph",
+                        "value": "graph"
+                    },
+                    {
+                        "name": "Table",
+                        "value": "table"
+                    }]
+                }]
+            },
+            {
+                "name": "all",
+                "description": "Check rankings",
+                "type": 1
+            }]
+        }]
     }
 ]

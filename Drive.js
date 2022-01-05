@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
+const sheets = google.sheets('v4');
 const colors = require('colors');
 const deepEqual = require('./deepEqual.js')
 
@@ -89,6 +90,14 @@ class Project{
 
     async editFile(ID, content){
         return await exports.editFile(this.auth, ID, content)
+    }
+
+    async getSpreadsheetHeader(ID){
+        return await exports.getSpreadsheetHeader(this.auth, ID)
+    }
+
+    async getSpreadsheet(ID, range){
+        return await exports.getSpreadsheet(this.auth, ID, range)
     }
     
     // onFileEdit(ID, callback){
@@ -309,3 +318,27 @@ function onChanges(auth, fileId, callback, data = undefined, refreshTime = 20000
     }, refreshTime)
 }
 exports.onChanges = onChanges
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} fileId 
+ */
+ async function getSpreadsheetHeader(auth, spreadsheetId) {
+    const res = await sheets.spreadsheets.get({auth, spreadsheetId});
+
+    return res.data
+}
+exports.getSpreadsheetHeader = getSpreadsheetHeader;
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} fileId 
+ */
+ async function getSpreadsheet(auth, spreadsheetId, range) {
+    const res = await sheets.spreadsheets.values.get({auth, spreadsheetId, range});
+
+    return res.data
+}
+exports.getSpreadsheet = getSpreadsheet;

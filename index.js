@@ -32,7 +32,7 @@ let drivebot;
 var version = '1.0';
 
 bot.on('ready', () => {
-    // slash_com.send_commands_guild(bot, '701873712370286722', 'server');
+    // slash_com.send_commands_guild(bot, '701873712370286722', 'uno');
     // slash_com.send_commands_all(bot, 'server');
     // slash_com.delete_commands_all(bot);
     // slash_com.delete_commands_guild(bot, '701873712370286722', 'server')
