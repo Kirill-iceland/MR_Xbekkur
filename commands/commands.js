@@ -4,7 +4,9 @@ const Drive = require('./../Drive.js')
 
 const fetch = require('cross-fetch');
 
-// const cvs = require('canvas')
+const cvs = require('canvas')
+
+const Chart = require('chart.js')
 
 const fs = require('fs');
 
@@ -19,6 +21,8 @@ let drivebot;
 let server_ip;
 
 const uno_id = '1ICwq5U0ub6xj_4tLruYuV39beeTxOGaLIfMQ68y6nx8';
+
+const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Maí', 'Jún', 'Júl', 'Águ', 'Sep', 'Ókt', 'Nóv', 'Des']
 
 /**
  * 
@@ -182,12 +186,49 @@ async function uno(interaction){
 
                         let res = '```\n' + player + ':'
                         let sum = 0;
+                        let gdata = []
+                        let glable = []
                         for(let y = 0; y < uno_.length; y++){
                             const year = uno_[y].values
                         
                             if(data[0].options[0].options[1] && data[0].options[0].options[1].value != 'none'){
                                 if(data[0].options[0].options[1].value == 'graph'){
+                                    
+                                    let month = parseInt(year[2][0].split('.')[1]);
+                                    let monthsum = 0
 
+                                    if(y != 0){
+                                        for(let m = 1; m < month; m++){
+                                            gdata.push(0)
+                                            glable.push(months[m] + ' ' + years[y])
+                                        }
+                                    }
+
+                                    for(let j = 2; j < year.length - 1; j++){
+                                        if(year[j][i] && year[j][i] != '' && year[j][i] != '0'){
+                                            const current_month = parseInt(year[j][0].split('.')[1])
+                                            if(current_month != month){
+                                                gdata.push(monthsum)
+                                                glable.push(months[month] + ' ' + years[y])
+                                                for(let m = month + 1; m < current_month; m++){
+                                                    gdata.push(0)
+                                                    glable.push(months[m] + ' ' + years[y])
+                                                }
+                                                month = current_month
+                                                monthsum = 0
+                                            }
+                                            monthsum += parseInt(year[j][i])
+                                        }
+                                    }
+                                    
+                                    gdata.push(monthsum)
+                                    glable.push(months[month] + ' ' + years[y])
+                                    if(y + 1 < uno_.length){
+                                        for(let m = month + 1; m <= 12; m++){
+                                            gdata.push(0)
+                                            glable.push(months[m] + ' ' + years[y])
+                                        }
+                                    }
                                 }else if(data[0].options[0].options[1].value == 'table'){
                                     
                                     res += '\n\n' + years[y] + ':'
@@ -207,7 +248,62 @@ async function uno(interaction){
                         }
                         if(data[0].options[0].options[1] && data[0].options[0].options[1].value != 'none'){
                             if(data[0].options[0].options[1].value == 'graph'){
+                                // console.log(glable)
+                                // console.log(gdata)
+                                const canvas = cvs.createCanvas(100 * gdata.length, 500)
+                                const ctx = canvas.getContext('2d')
 
+                                const data1 = {
+                                    labels: glable,
+                                    datasets: [{
+                                        label: player,
+                                        data: gdata,
+                                        backgroundColor: [
+                                          'rgba(255, 99, 132, 0.2)',
+                                          'rgba(255, 129, 98, 0.2)',
+                                          'rgba(255, 159, 64, 0.2)',
+                                          'rgba(255, 182, 75, 0.2)',
+                                          'rgba(255, 205, 86, 0.2)',
+                                          'rgba(165, 199, 139, 0.2)',
+                                          'rgba(75, 192, 192, 0.2)',
+                                          'rgba(65, 177, 214, 0.2)',
+                                          'rgba(54, 162, 235, 0.2)',
+                                          'rgba(95, 132, 245, 0.2)',
+                                          'rgba(153, 102, 255, 0.2)',
+                                          'rgba(204, 101, 194, 0.2)'
+                                        ],
+                                        borderColor: [
+                                          'rgb(255, 99, 132)',
+                                          'rgb(255, 129, 98)',
+                                          'rgb(255, 159, 64)',
+                                          'rgb(255, 182, 75)',
+                                          'rgb(255, 205, 86)',
+                                          'rgb(165, 199, 139)',
+                                          'rgb(75, 192, 192)',
+                                          'rgb(65, 177, 214)',
+                                          'rgb(54, 162, 235)',
+                                          'rgb(95, 132, 245)',
+                                          'rgb(153, 102, 255)',
+                                          'rgb(204, 101, 194)'
+                                        ],
+                                        borderWidth: 1,
+                                    }]
+                                };
+                                const config = {
+                                    type: 'bar',
+                                    data: data1,
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    },
+                                };
+
+                                const graph = new Chart(ctx, config)
+                                // fs.writeFileSync('test.png', canvas.toBuffer())
+                                return {content: ' ', files: [{attachment: canvas.toBuffer(), name: player + '_graph.png'}]}
                             }else if(data[0].options[0].options[1].value == 'table'){
                                 res += '\n' + '-'.repeat(14 + sum.length) + '\nsum:    ' + sum + ' stig\n```'
                                 return res
