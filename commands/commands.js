@@ -12,7 +12,9 @@ const fs = require('fs');
 
 const readline = require('readline');
 
-const slash_com = require('./slash-com.js')
+const slash_com = require('./slash-com.js');
+const { options } = require("nodemon/lib/config");
+const nodemon = require("nodemon");
 
 let bot;
 
@@ -23,6 +25,21 @@ let server_ip;
 const uno_id = '1ICwq5U0ub6xj_4tLruYuV39beeTxOGaLIfMQ68y6nx8';
 
 const months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Maí', 'Jún', 'Júl', 'Águ', 'Sep', 'Ókt', 'Nóv', 'Des']
+
+const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+
+/**
+ * 
+ * @param {number} index 
+ * @returns {String}
+ */
+function excel_Letter(index){
+    if(index >= 0){
+        return excel_Letter(Math.floor(index/ 26) - 1) + alphabet[index % 26]
+    }
+    return ""
+}
 
 /**
  * 
@@ -173,9 +190,27 @@ async function uno(interaction){
         case 'remove':
 
             break;
-        case 'change':
 
-            break;
+
+
+        case 'change':
+            const player = data[0].options[0].options[0].value
+            const name = data[0].options[0].options[1].value
+            const players = uno_[0].values[0]
+
+            for(let i = 1; i < players.length; i++){
+                if(players[i] == player){
+                    for(let y = 0; y < uno_.length; y++){
+                        const year = years[y]
+                        await drivebot.updateSpreadsheet(uno_id, `'${year}'!${excel_Letter(i)}1`, "USER_ENTERED", [[name]])
+                    }
+                    return 'Nafninu **' + player + '** var breitt í **' + name + '**!'
+                }
+            }
+            return player + ' fannst ekki'
+
+
+
         case 'score':
             if(data[0].options[0].name == 'player'){
                 const player = data[0].options[0].options[0].value
@@ -303,7 +338,12 @@ async function uno(interaction){
 
                                 const graph = new Chart(ctx, config)
                                 // fs.writeFileSync('test.png', canvas.toBuffer())
-                                return {content: ' ', files: [{attachment: canvas.toBuffer(), name: player + '_graph.png'}]}
+                                const embededMSG = new Discord.MessageEmbed()
+                                    .setColor('#cc5555')
+                                    .setTitle(player)
+                                    .setFooter(interaction.user.username, interaction.user.avatarURL())
+                                    .setImage('attachment://' + player + '_graph.png');
+                                return {content: ' ', embeds: [embededMSG], files: [{attachment: canvas.toBuffer(), name: player + '_graph.png'}]}
                             }else if(data[0].options[0].options[1].value == 'table'){
                                 res += '\n' + '-'.repeat(14 + sum.length) + '\nsum:    ' + sum + ' stig\n```'
                                 return res
@@ -317,7 +357,37 @@ async function uno(interaction){
                 return player + ' fannst ekki'
 
             }else if(data[0].options[0].name == 'all'){
+                const players = uno_[0].values[0]
+                const player_data = []
+                let max_length = 0
 
+                for(let i = 1; i < players.length; i++){
+                    const player = players[i]
+                    let sum = 0
+                    max_length = Math.max(player.length, max_length)
+
+                    for(let y = 0; y < uno_.length; y++){
+                        const year = uno_[y].values
+                        sum += parseInt(year[year.length - 1][i])
+                    }
+
+                    player_data.push({player, value: sum})
+                }
+                player_data.sort((a, b) => b.value - a.value)
+
+                let res = '```\n'
+
+                let rank_value = -1
+                player_data.forEach((p, i) => {
+                    if(rank_value == p.value){
+                        res += '    ' + p.player + ' '.repeat(max_length - p.player.length) + ' - ' + p.value + ' stig\n'
+                    }else{
+                        let rank = (i + 1).toString()
+                        res += rank + '.' + ' '.repeat(3 - rank.length) + p.player + ' '.repeat(max_length - p.player.length) + ' - ' + p.value + ' stig\n'
+                    }
+                    rank_value = p.value
+                })
+                return res + '```'
             }
     }
 }
