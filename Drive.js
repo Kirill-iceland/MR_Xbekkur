@@ -100,6 +100,18 @@ class Project{
         return await exports.getSpreadsheet(this.auth, ID, range)
     }
     
+
+    /**
+     * 
+     * @param {String} ID 
+     * @param {String} range 
+     * @param {'RAW' | 'USER_ENTERED'} valueInputOption
+     * @param {String[][] | number[][]} cells
+     */
+    async updateSpreadsheet(ID, range, valueInputOption, cells){
+        return await exports.updateSpreadsheet(this.auth, ID, range, valueInputOption, cells)
+    }
+    
     // onFileEdit(ID, callback){
     //     exports.onFileEdit(this.auth, ID, callback)
     // }
@@ -334,7 +346,8 @@ exports.getSpreadsheetHeader = getSpreadsheetHeader;
 /**
  * 
  * @param {google.auth.OAuth2} auth 
- * @param {String} fileId 
+ * @param {String} fileId  
+ * @param {String} range
  */
  async function getSpreadsheet(auth, spreadsheetId, range) {
     const res = await sheets.spreadsheets.values.get({auth, spreadsheetId, range});
@@ -342,3 +355,18 @@ exports.getSpreadsheetHeader = getSpreadsheetHeader;
     return res.data
 }
 exports.getSpreadsheet = getSpreadsheet;
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} fileId 
+ * @param {String} range 
+ * @param {'RAW' | 'USER_ENTERED'} valueInputOption
+ * @param {String[][] | number[][]} cells
+ */
+ async function updateSpreadsheet(auth, spreadsheetId, range, valueInputOption, cells) {
+    const res = await sheets.spreadsheets.values.update({auth, spreadsheetId, range, valueInputOption, resource: {values: cells}});
+
+    return res.data
+}
+exports.updateSpreadsheet = updateSpreadsheet;
