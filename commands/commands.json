@@ -21,7 +21,7 @@
             "description": "Change a player's name",
             "type": 2,
             "options": [{
-                "name": "player",
+                "name": "name",
                 "description": "Change a player's name",
                 "type": 1,
                 "options": [{
@@ -65,7 +65,7 @@
                 },
                 {
                     "name": "date",
-                    "description": "Date of the win `yyyy/mm/dd`",
+                    "description": "Date of the win `yyyy/mm/dd` or `unknown`. Default is today",
                     "type": 3, 
                     "required": false
                 }]
@@ -98,7 +98,7 @@
                 },
                 {
                     "name": "date",
-                    "description": "Date of the win `yyyy/mm/dd`",
+                    "description": "Date of the win `yyyy/mm/dd` or `unknown`. Default is today",
                     "type": 3, 
                     "required": false
                 }]
