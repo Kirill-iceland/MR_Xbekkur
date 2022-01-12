@@ -111,6 +111,22 @@ class Project{
     async updateSpreadsheet(ID, range, valueInputOption, cells){
         return await exports.updateSpreadsheet(this.auth, ID, range, valueInputOption, cells)
     }
+
+    /**
+     *  
+     * @param {String} ID 
+     * @param {{
+     *          sheetId: Number
+     *          startRowIndex: Number,
+     *          endRowIndex: Number,
+     *          startColumnIndex: Number,
+     *          endColumnIndex: Number
+     *        }} range 
+     * @param {'ROWS' | 'COLUMNS'} dimension
+     */
+    async insertRangeSpreadsheet(ID, range, dimension) {
+        return await exports.insertRangeSpreadsheet(this.auth, ID, range, dimension)
+    }
     
     // onFileEdit(ID, callback){
     //     exports.onFileEdit(this.auth, ID, callback)
@@ -359,7 +375,7 @@ exports.getSpreadsheet = getSpreadsheet;
 /**
  * 
  * @param {google.auth.OAuth2} auth 
- * @param {String} fileId 
+ * @param {String} spreadsheetId 
  * @param {String} range 
  * @param {'RAW' | 'USER_ENTERED'} valueInputOption
  * @param {String[][] | number[][]} cells
@@ -370,3 +386,23 @@ exports.getSpreadsheet = getSpreadsheet;
     return res.data
 }
 exports.updateSpreadsheet = updateSpreadsheet;
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} spreadsheetId 
+ * @param {{
+ *          sheetId: Number
+ *          startRowIndex: Number,
+ *          endRowIndex: Number,
+ *          startColumnIndex: Number,
+ *          endColumnIndex: Number
+ *        }} range 
+ * @param {'ROWS' | 'COLUMNS'} dimension
+ */
+ async function insertRangeSpreadsheet(auth, spreadsheetId, range, dimension) {
+    const res = await sheets.spreadsheets.batchUpdate({auth, spreadsheetId, resource: {requests: [{insertRange: {range, shiftDimension: dimension}}]}});
+
+    return res.data
+}
+exports.insertRangeSpreadsheet = insertRangeSpreadsheet;
