@@ -127,6 +127,26 @@ class Project{
     async insertRangeSpreadsheet(ID, range, dimension) {
         return await exports.insertRangeSpreadsheet(this.auth, ID, range, dimension)
     }
+
+    /**
+     * 
+     * @param {String} ID
+     * @param {String} title  
+     * @param {{
+     *          index?: Number,
+     *          gridProperties?: {
+     *              rowCount?: Number
+     *              columnCount?: Number,
+     *              frozenRowCount?: Number,
+     *              frozenColumnCount?: Number,
+     *              hideGridlines?: boolean,
+     *              rowGroupControlAfter?: boolean,
+     *              columnGroupControlAfter?: boolean
+     *        }}} options
+     */
+    async addSheetSpreadsheet( ID, title, {index, gridProperties} = {}) {
+        return await exports.addSheetSpreadsheet(this.auth,  ID, title, {index, gridProperties})
+    }
     
     // onFileEdit(ID, callback){
     //     exports.onFileEdit(this.auth, ID, callback)
@@ -406,3 +426,27 @@ exports.updateSpreadsheet = updateSpreadsheet;
     return res.data
 }
 exports.insertRangeSpreadsheet = insertRangeSpreadsheet;
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} spreadsheetId
+ * @param {String} title  
+ * @param {{
+ *          index?: Number,
+ *          gridProperties?: {
+ *              rowCount?: Number
+ *              columnCount?: Number,
+ *              frozenRowCount?: Number,
+ *              frozenColumnCount?: Number,
+ *              hideGridlines?: boolean,
+ *              rowGroupControlAfter?: boolean,
+ *              columnGroupControlAfter?: boolean
+ *        }}} options
+ */
+ async function addSheetSpreadsheet(auth, spreadsheetId, title, {index, gridProperties} = {}) {
+    const res = await sheets.spreadsheets.batchUpdate({auth, spreadsheetId, resource: {requests: [{addSheet: {properties: {title, index, gridProperties}}}]}});
+
+    return res.data
+}
+exports.addSheetSpreadsheet = addSheetSpreadsheet;
