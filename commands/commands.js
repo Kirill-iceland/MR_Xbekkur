@@ -117,8 +117,9 @@ async function server(data, interaction){
 async function getUnoYear(){
     const headder = await drivebot.getSpreadsheetHeader(uno_id)
     let res = []
-    headder.sheets.forEach(v => res.push(v.properties.title))
-    return res
+    let id = []
+    headder.sheets.forEach(v => {res.push(v.properties.title); id.push(v.properties.sheetId)})
+    return [res, id]
 }
 
 async function getUnoData(years = []){
@@ -130,6 +131,24 @@ async function getUnoData(years = []){
 }
 
 
+/**
+ * 
+ * @param {String} player 
+ * @param {String} year 
+ * @param {String[]} years 
+ */
+function addUnoSheet(player, year, years){
+    let index = undefined
+    for(let y = 0; y < years.length; y++){
+        if(parseInt(year) < parseInt(years[y])){
+            index = y
+            y = years.length
+        }
+    }
+    drivebot.addSheetSpreadsheet(uno_id, year, {index: index, gridProperties: {frozenRowCount: 1, frozenColumnCount: 1}})
+}
+
+const uno_space = 5;
 /**
  * 
  * @param {Discord.CommandInteraction} interaction 
@@ -173,7 +192,9 @@ async function uno(interaction){
     let data = interaction.options.data
 
     // console.log(uno_txt)
-    const years = await getUnoYear()
+    const getYears = await getUnoYear()
+    const years = getYears[0]
+    const years_id = getYears[1]
     const uno_ = await getUnoData(years)
     // console.log(uno_)
     // console.log(JSON.stringify(data))
@@ -182,14 +203,90 @@ async function uno(interaction){
         
         case 'add':
             if(data[0].options[0].name == 'player'){
-
+                return 'N/A'
             }else if(data[0].options[0].name == 'win'){
+                const players = uno_[0].values[0]
+                const player = data[0].options[0].options[0].value
+                let date;
+                let str_date
 
+                if(data[0].options[0].options[1]){
+                    if(data[0].options[0].options[1].value == 'unknown'){
+                        date = {getFullYear: () => (new Date()).getFullYear(), oskilgeint: true}
+                    }else{
+                        date = new Date(data[0].options[0].options[1].value)
+                        str_date = date.getDate() + '.' + (date.getMonth() + 1)
+                    }
+                }else{
+                    date = new Date()
+                    str_date = date.getDate() + '.' + (date.getMonth() + 1)
+                }
+
+                for(let i = 1; i < players.length; i++){
+                    if(players[i] == player){
+                        for(let y = 0; y < uno_.length; y++){
+
+                            const year_ = years[y]
+                            const year = uno_[y].values
+                            if(parseInt(year_) == date.getFullYear()){
+
+                                if(!date.oskilgeint){
+                                    for(let j = 2; j < year.length - 1; j++){
+                                        if(!year[j][0] || year[j][0] == ''){
+                                            //tested
+                                            if(year.length - j > uno_space + 1){
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i) + (j + 1).toString()}`, "USER_ENTERED", [[1]])
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!A${(j + 1).toString()}`, "USER_ENTERED", [[str_date + '.' + year_]])
+                                            }else{
+                                                await drivebot.insertRangeSpreadsheet(uno_id, {sheetId: years_id[y], startRowIndex: j, endRowIndex: 2 * j + uno_space + 2 - year.length , startColumnIndex: 0, endColumnIndex: players.length}, "ROWS")
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i) + (j + 1).toString()}`, "USER_ENTERED", [[1]])
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!A${(j + 1).toString()}`, "USER_ENTERED", [[str_date + '.' + year_]])
+                                            }
+                                            return 'Vinningi var bætt hjá **' + player + '** þann `' + str_date + `'` + date.getFullYear() + '`!'
+                                        }
+
+                                        const current_date = year[j][0].split('.')
+                                        if(year[j][0] == str_date){
+                                            //tested
+                                            if(isNaN(parseInt(year[j][i]))){
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i) + (j + 1).toString()}`, "USER_ENTERED", [[1]])
+                                            }else{
+                                                await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i) + (j + 1).toString()}`, "USER_ENTERED", [[1 + parseInt(year[j][i])]])
+                                            }
+                                            return 'Vinningi var bætt hjá **' + player + '** þann `' + str_date + `'` + date.getFullYear() + '`!'
+                                        }else if((parseInt(current_date[0]) > date.getDate() && parseInt(current_date[1]) == date.getMonth() + 1) || (parseInt(current_date[1]) > date.getMonth() + 1)){
+                                            //tested
+                                            await drivebot.insertRangeSpreadsheet(uno_id, {sheetId: years_id[y], startRowIndex: j, endRowIndex: j + 1, startColumnIndex: 0, endColumnIndex: players.length}, "ROWS")
+                                            await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i) + (j + 1).toString()}`, "USER_ENTERED", [[1]])
+                                            await drivebot.updateSpreadsheet(uno_id, `'${year_}'!A${(j + 1).toString()}`, "USER_ENTERED", [[str_date + '.' + year_]])
+                                            return 'Vinningi var bætt hjá **' + player + '** þann `' + str_date + `'` + date.getFullYear() + '`!'
+                                        }
+                                    }
+                                    return 'Vinningi var bætt hjá **' + player + '** þann `' + str_date + `'` + date.getFullYear() + '`!'
+                                }
+
+                                if(isNaN(parseInt(year[1][i]))){
+                                    await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i)}2`, "USER_ENTERED", [['1']])
+                                }else{
+                                    await drivebot.updateSpreadsheet(uno_id, `'${year_}'!${excel_Letter(i)}2`, "USER_ENTERED", [[1 + parseInt(year[1][i])]])
+                                }
+                                return 'Vinningi var bætt hjá **' + player + '** á ókunugum deigi!'
+                            }
+
+
+                        }
+                        addUnoSheet(players, date.getFullYear().toString(), years)
+                        if(!date.oskilgeint){
+                            return 'Vinningi var bætt hjá **' + player + '** þann `' + str_date + `'` + date.getFullYear() + '`!'
+                        }
+                        return 'Vinningi var bætt hjá **' + player + '** á ókunugum deigi!'
+                    }
+                }
+                return player + ' fannst ekki'
             }
             break;
         case 'remove':
-
-            break;
+            return 'N/A'
 
 
 
@@ -267,7 +364,7 @@ async function uno(interaction){
                                 }else if(data[0].options[0].options[1].value == 'table'){
                                     
                                     res += '\n\n' + years[y] + ':'
-                                    if(year[1][i] != '' && year[1][i] != '0'){
+                                    if(year[1][i] && year[1][i] != '' && year[1][i] != '0'){
                                         const line = '\nN/A   - ' + year[1][i] + ' stig'
                                         res += line
                                     }
@@ -345,7 +442,7 @@ async function uno(interaction){
                                     .setImage('attachment://' + player + '_graph.png');
                                 return {content: ' ', embeds: [embededMSG], files: [{attachment: canvas.toBuffer(), name: player + '_graph.png'}]}
                             }else if(data[0].options[0].options[1].value == 'table'){
-                                res += '\n' + '-'.repeat(14 + sum.length) + '\nsum:    ' + sum + ' stig\n```'
+                                res += '\n' + '-'.repeat(14 + sum.toString().length) + '\nsum:    ' + sum + ' stig\n```'
                                 return res
                             }
                         }else{
