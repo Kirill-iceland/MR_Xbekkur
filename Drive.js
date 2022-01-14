@@ -450,3 +450,86 @@ exports.insertRangeSpreadsheet = insertRangeSpreadsheet;
     return res.data
 }
 exports.addSheetSpreadsheet = addSheetSpreadsheet;
+
+/**
+ * 
+ * @param {google.auth.OAuth2} auth 
+ * @param {String} spreadsheetId
+ * @param {String} fields
+ * @param {{
+ *          sheetId: Number
+ *          startRowIndex: Number,
+ *          startColumnIndex: Number
+ *        }} start
+ * @param {{
+ *          sheetId: Number
+ *          startRowIndex: Number,
+ *          endRowIndex: Number,
+ *          startColumnIndex: Number,
+ *          endColumnIndex: Number
+ *        }} range 
+ * @param {[{
+ *          formattedValue?: {
+ *              numberFormat?: {
+ *                  type: 'TEXT' | 'NUMBER' | 'PERCENT' | 'CURRENCY' | 'DATE' | 'TIME' | 'DATE_TIME' | 'SCIENTIFIC',
+ *                  pattern?: String
+ *              },
+ *              backgroundColor?: {
+ *                  red: number,
+ *                  green: number,
+ *                  blue: number,
+ *                  alpha: number
+ *              },
+ *              backgroundColorStyle: {
+ *                  rgbColor: {
+ *                      red: number,
+ *                      green: number,
+ *                      blue: number,
+ *                      alpha: number
+ *                  },
+ *                  themeColor: 'TEXT' | 'BACKGROUND' | 'ACCENT1' | 'ACCENT2' | 'ACCENT3' | 'ACCENT4' | 'ACCENT5' | 'ACCENT6' | 'LINK'
+ *              },
+ *              borders?: {
+ *                  top?: {
+ *                      style: 'DOTTED' | 'DASHED' | 'SOLID' | 'SOLID_MEDIUM' | 'SOLID_THICK' | 'NONE' | 'DOUBLE',
+ *                      width: Number,
+ *                      color: {
+ *                          red: number,
+ *                          green: number,
+ *                          blue: number,
+ *                          alpha: number
+ *                      },
+ *                      colorStyle: any
+ *                  }
+ *              }
+ *          },
+ *          hyperlink?: String,
+ *          note?: String,
+ *          textFormatRuns?: {
+ *              startIndex: Number,
+ *              format: {
+ *                  foregroundColor: {
+ *                  red: number,
+ *                  green: number,
+ *                  blue: number,
+ *                  alpha: number
+ *              },
+ *              foregroundColorStyle: any,
+ *              fontFamily: String,
+ *              fontSize: Number,
+ *              bold: boolean,
+ *              italic: boolean,
+ *              strikethrough: boolean,
+ *              underline: boolean,
+ *              link: {
+ *                  uri: String
+ *              }
+ *          }
+ *        }}]} RowData 
+ */
+ async function cellFormatSpreadsheet(auth, spreadsheetId, start, range, RowData) {
+    const res = await sheets.spreadsheets.batchUpdate({auth, spreadsheetId, resource: {requests: [{updateCells: {fields, start, range, rows: {values: RowData}}}]}});
+
+    return res.data
+}
+exports.cellFormatSpreadsheet = cellFormatSpreadsheet;
